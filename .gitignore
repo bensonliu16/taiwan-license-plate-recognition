@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Models, datasets, and generated media
+*.pt
+*.onnx
+*.engine
+*.mp4
+*.avi
+*.mov
+*.mkv
+datasets/
+data/
+runs/
+outputs/
+tw_plate_pics/
+
+# Downloaded model caches
+_processor_fixed/
+.cache/
+
