@@ -1,9 +1,17 @@
 # Taiwan License Plate Recognition
 
-A real-time computer-vision pipeline that detects Taiwanese license plates with
-a custom YOLO model and recognizes the plate text with a vision-language model.
-It supports video files, webcams, and RTSP streams, with optional annotated
-video output.
+A computer-vision pipeline that detects Taiwanese license plates with a custom
+YOLO model and recognizes plate text with InternVL3. It supports video files,
+webcams, and RTSP streams, with optional annotated video output.
+
+## Demo
+
+![Animated output from the custom YOLO detector](assets/detection-demo.gif)
+
+This clip was generated with the project's model and original test footage
+owned by the author. The detector output is real. Plate characters, recorder
+timestamps, and the recorder sidebar were removed from the published preview
+for privacy.
 
 ## Highlights
 
@@ -12,23 +20,23 @@ video output.
 - Automatic CUDA acceleration with a CPU fallback
 - Configurable confidence, frame stride, source, and output path
 - Lightweight detection-only mode for faster testing
-- No plate images, videos, or model weights stored in the repository
+- Raw videos, datasets, OCR caches, and model weights excluded from Git
 
 ## Pipeline
 
 ```text
 Video / webcam / RTSP stream
-          │
-          ▼
+          |
+          v
   YOLO plate detector
-          │
-          ▼
+          |
+          v
     Crop each plate
-          │
-          ▼
+          |
+          v
  InternVL3 text recognition
-          │
-          ▼
+          |
+          v
 Annotated preview or MP4 output
 ```
 
@@ -36,12 +44,16 @@ Annotated preview or MP4 output
 
 ```text
 .
-├── main.py             # Detection + plate-text recognition
-├── detect.py           # Faster YOLO-only detection baseline
-├── models/
-│   └── README.md       # Private/local model setup
-├── requirements.txt
-└── .gitignore
+|-- main.py             # Detection and plate-text recognition
+|-- detect.py           # Faster YOLO-only detection baseline
+|-- assets/
+|   `-- detection-demo.gif
+|-- models/
+|   `-- README.md       # Local model setup
+|-- tests/
+|   `-- test_pipeline.py
+|-- requirements.txt
+`-- .gitignore
 ```
 
 ## Setup
@@ -56,9 +68,8 @@ Annotated preview or MP4 output
 3. Follow [`models/README.md`](models/README.md) to place the custom detector at
    `models/license_plate_yolo.pt`.
 
-The OCR model is downloaded from Hugging Face on the first recognition run and
-requires several gigabytes of memory. A CUDA-capable GPU is strongly
-recommended.
+The OCR model downloads from Hugging Face on the first recognition run and
+requires several gigabytes of memory. A CUDA-capable GPU is recommended.
 
 ## Usage
 
@@ -88,18 +99,24 @@ python detect.py --source sample.mp4
 
 Press `Q` or `Esc` to stop a preview.
 
+## Tests
+
+The test suite checks command-line parsing, input-source handling, output-writer
+configuration, OCR response handling, and early validation failures without
+downloading model weights:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
 ## Privacy and responsible use
 
 License plates can identify or track real people. Use this project only on
-footage you are authorized to process. Avoid publishing readable plates,
-location information, or personal data in datasets and demonstrations. Blur or
-replace plate numbers before sharing screenshots or videos.
+footage you are authorized to process. Do not publish readable plate numbers,
+location information, or private camera metadata.
 
-## Model and data note
-
-Model weights, training images, downloaded processor files, and test videos are
-excluded from Git. Before distributing any model or dataset, verify ownership,
-privacy requirements, and the relevant licenses.
+The repository excludes raw footage, full datasets, model weights, and
+downloaded OCR files. The included demo is cropped and mosaicked for privacy.
 
 ## Built with
 
